@@ -30,15 +30,13 @@ export default function AboutPage() {
       </div>
 
       <button
-        onClick={() => router.push("/login")}  // Navigate to Sign In page
-        className="mt-8 bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition duration-200"
+        onClick={() => router.push("/login")} 
+        className="mt-8 bg-gray-700 text-white px-6 py-3 rounded hover:bg-gray-500 transition duration-200"
       >
         Start Journaling
       </button>
 
-      <footer className="mt-12 text-sm text-gray-400">
-        &copy; 2025 Personal Journal App
-      </footer>
+      
     </main>
   );
 }
