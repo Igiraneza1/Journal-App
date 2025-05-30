@@ -15,9 +15,16 @@ export default function Dashboard() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [showForm, setShowForm] = useState(false);
 
+  // Redirect if not authenticated
   useEffect(() => {
-    if (!loading && !user) router.push("/login");
+    if (!loading && !user) {
+      router.push("/login");
+    }
   }, [user, loading, router]);
+
+  // Only render after auth state resolves
+  if (loading) return <p className="text-center mt-10">Checking authentication...</p>;
+  if (!user) return null; // Avoid flickering while redirecting
 
   const addEntry = (content: string) => {
     const newEntry = {
@@ -32,8 +39,6 @@ export default function Dashboard() {
   const deleteEntry = (id: string) => {
     setEntries(entries.filter((entry) => entry.id !== id));
   };
-
-  if (!user) return <p>Loading...</p>;
 
   return (
     <main className="max-w-3xl mx-auto p-6">
