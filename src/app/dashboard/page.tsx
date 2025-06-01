@@ -7,38 +7,83 @@ import { useEffect, useState } from "react";
 import EntryForm from "../components/entryForm";
 import EntryList from "../components/entryList";
 
+type Entry = {
+  id: string;
+  content: string;
+  date: string;
+};
+
 export default function Dashboard() {
   const [user, loading] = useAuthState(auth);
   const router = useRouter();
-
-  type Entry = { id: string; content: string; date: string };
   const [entries, setEntries] = useState<Entry[]>([]);
   const [showForm, setShowForm] = useState(false);
 
-  // Redirect if not authenticated
+  // Redirect unauthenticated users
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
     }
   }, [user, loading, router]);
 
-  // Only render after auth state resolves
+  // Fetch user's journal entries
+  const fetchEntries = async () => {
+    if (!user) return;
+    try {
+      const res = await fetch(`/api/entries?uid=${user.uid}`);
+      const data = await res.json();
+      setEntries(data);
+    } catch (err) {
+      console.error("Failed to fetch entries:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchEntries();
+    }
+  }, [user]);
+
+  // Add entry to Firebase
+  const addEntry = async (content: string) => {
+    if (!user) return;
+    try {
+      const res = await fetch("/api/entries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content,
+          uid: user.uid,
+        }),
+      });
+
+      if (res.ok) {
+        const newEntry = await res.json();
+        setEntries([newEntry, ...entries]);
+        setShowForm(false);
+      }
+    } catch (err) {
+      console.error("Failed to add entry:", err);
+    }
+  };
+
+  // Delete entry from Firebase
+  const deleteEntry = async (id: string) => {
+    try {
+      const res = await fetch(`/api/entries/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setEntries(entries.filter((entry) => entry.id !== id));
+      }
+    } catch (err) {
+      console.error("Failed to delete entry:", err);
+    }
+  };
+
   if (loading) return <p className="text-center mt-10">Checking authentication...</p>;
-  if (!user) return null; // Avoid flickering while redirecting
-
-  const addEntry = (content: string) => {
-    const newEntry = {
-      id: Date.now().toString(),
-      content,
-      date: new Date().toLocaleString(),
-    };
-    setEntries([newEntry, ...entries]);
-    setShowForm(false);
-  };
-
-  const deleteEntry = (id: string) => {
-    setEntries(entries.filter((entry) => entry.id !== id));
-  };
+  if (!user) return null;
 
   return (
     <main className="max-w-3xl mx-auto p-6">

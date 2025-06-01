@@ -22,7 +22,7 @@ export default function RootLayout({
         </Link>
         <div>
           <Link
-            href="/signin"
+            href="/login"
             className="px-4 py-3 rounded bg-gray-800 hover:bg-gray-500 text-white "
           >
             Sign In
