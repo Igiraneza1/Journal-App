@@ -9,13 +9,11 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 export default function Login() {
   const [signInWithGoogle] = useSignInWithGoogle(auth);
   const router = useRouter();
-
-  // Email/password state
+ 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Google login handler
   const handleGoogleLogin = async () => {
     try {
       await signInWithGoogle();
@@ -26,7 +24,6 @@ export default function Login() {
     }
   };
 
-  // Email/password login handler
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");

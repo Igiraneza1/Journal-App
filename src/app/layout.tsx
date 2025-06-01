@@ -16,14 +16,14 @@ export default function RootLayout({
     <html lang="en">
       <body>
         
-        <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
-        <Link href="/" className="text-xl font-bold hover:underline">
+        <nav className="flex justify-between mx-40 items-center p-4 ">
+        <Link href="/" className="text-2xl font-bold">
           Personal Journal
         </Link>
         <div>
           <Link
             href="/signin"
-            className="px-4 py-2 rounded hover:bg-gray-700 transition"
+            className="px-4 py-3 rounded bg-gray-800 hover:bg-gray-500 text-white "
           >
             Sign In
           </Link>

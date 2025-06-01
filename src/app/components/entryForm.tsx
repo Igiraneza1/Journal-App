@@ -8,9 +8,10 @@ import { useRouter } from "next/navigation";
 
 interface EntryFormProps {
   user: User;
+  onAdd: (content: string) => void; 
 }
 
-export default function EntryForm({ user }: EntryFormProps) {
+export default function EntryForm({ user}: EntryFormProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
