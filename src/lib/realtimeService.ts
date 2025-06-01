@@ -1,5 +1,5 @@
 import { getDatabase, ref, set, get, child } from "firebase/database";
-import app from "./firebaseConfig";
+import { app } from "../lib/firebaseConfig"; // Adjust the import path as necessary
 
 const db = getDatabase(app);
 

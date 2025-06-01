@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "../../../lib/firebaseConfig";
+
 import {
   collection,
   getDocs,
@@ -14,7 +15,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const { uid } = req.query;
 
-      const q = uid
+      // Build Firestore query
+      const entriesQuery = uid
         ? query(
             collection(db, "journalEntries"),
             where("uid", "==", uid),
@@ -22,11 +24,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           )
         : query(collection(db, "journalEntries"), orderBy("date", "desc"));
 
-      const snapshot = await getDocs(q);
+      const snapshot = await getDocs(entriesQuery);
 
       const entries = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...(doc.data() as { content: string; uid: string; date: string }),
+        ...(doc.data() as {
+          content: string;
+          uid: string;
+          date: string;
+        }),
       }));
 
       res.status(200).json(entries);
@@ -45,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const newEntry = {
         content,
         uid,
-        date: new Date().toISOString(), // store date as ISO string
+        date: new Date().toISOString(),
       };
 
       const docRef = await addDoc(collection(db, "journalEntries"), newEntry);
